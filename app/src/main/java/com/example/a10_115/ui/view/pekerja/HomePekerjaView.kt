@@ -45,8 +45,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.a10_115.model.Pekerja
 import com.example.a10_115.ui.Navigation.DestinasiNavigasi
 import com.example.a10_115.ui.viewModel.PenyediaViewModel
+import com.example.a10_115.ui.viewModel.pekerja.HomePekerjaViewModel
 import com.example.a10_115.ui.viewModel.pekerja.HomeUiState
-import com.example.a10_115.ui.viewModel.pekerja.HomeViewModel
 
 object DestinasiHomePekerja : DestinasiNavigasi {
     override val route = "home_pekerja"
@@ -55,13 +55,13 @@ object DestinasiHomePekerja : DestinasiNavigasi {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun HomeScreenPekerja(
     navigateToItemEntry: () -> Unit,
     navigateToSplash: () -> Unit, // Tambahkan parameter untuk kembali ke Splash
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit = {},
     onRefresh: () -> Unit = {},
-    viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: HomePekerjaViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 

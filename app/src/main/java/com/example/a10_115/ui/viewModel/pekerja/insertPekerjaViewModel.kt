@@ -9,7 +9,7 @@ import com.example.a10_115.model.Pekerja
 import com.example.a10_115.repository.PekerjaRepository
 import kotlinx.coroutines.launch
 
-class insertViewModel(private val pekerja: PekerjaRepository) : ViewModel() {
+class insertPekerjaViewModel(private val pekerja: PekerjaRepository) : ViewModel() {
     var uiState by mutableStateOf(InsertUiState())
         private set
 

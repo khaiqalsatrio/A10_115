@@ -20,7 +20,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -37,6 +37,7 @@ import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -45,6 +46,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.a10_115.model.Tanaman
 import com.example.a10_115.ui.Navigation.DestinasiNavigasi
 import com.example.a10_115.ui.viewModel.PenyediaViewModel
+import com.example.a10_115.ui.viewModel.tanaman.HomeTanamanViewModel
+import com.example.a10_115.ui.viewModel.tanaman.HomeUiState
 
 object DestinasiHomeTanaman : DestinasiNavigasi {
     override val route = "home_tanaman"
@@ -53,57 +56,47 @@ object DestinasiHomeTanaman : DestinasiNavigasi {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun HomeScreenTanaman(
     navigateToItemEntry: () -> Unit,
-    navigateToSplash: () -> Unit, // Tambahkan parameter untuk kembali ke Splash
+    navigateToSplash: () -> Unit,
     modifier: Modifier = Modifier,
-    onDetailClick: (String) -> Unit = {},
+    onDetailClick: (Tanaman) -> Unit = {}, // Mengubah menjadi Tanaman
     onRefresh: () -> Unit = {},
-    viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: HomeTanamanViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    LaunchedEffect(Unit) {
+        viewModel.getTanaman()
+    }
 
     Scaffold(
-        modifier = modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = navigateToItemEntry,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(18.dp)
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Tambah Tanaman")
-            }
-        },
+        modifier = modifier,
         topBar = {
             SmallTopAppBar(
                 title = { Text("Daftar Data Tanaman") },
-                navigationIcon = { // Tambahkan ikon panah di sebelah kiri
+                navigationIcon = {
                     IconButton(onClick = navigateToSplash) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack, // Ganti dengan ikon panah kiri
-                            contentDescription = "Kembali ke Splash"
-                        )
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
-                scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = { viewModel.getTanaman() }) {
                         Icon(imageVector = Icons.Default.Refresh, contentDescription = "Refresh")
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = navigateToItemEntry) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Tanaman")
+            }
         }
     ) { innerPadding ->
         HomeStatus(
-            homeUiState = viewModel.tanamanUIState,
+            homeUiState = viewModel.tanamanUiState,
             retryAction = { viewModel.getTanaman() },
             modifier = Modifier.padding(innerPadding),
-            onDetailClick = onDetailClick,
-            onDeleteClick = { tanaman ->
-                viewModel.deleteTanaman(tanaman.idTanaman) // Panggil fungsi delete
-                viewModel.getTanaman() // Refresh daftar tanaman setelah delete
-            }
+            onDetailClick = onDetailClick, // Mengirimkan Tanaman
+            onDeleteClick = { tanaman -> viewModel.deleteTanaman(tanaman.idTanaman) }
         )
     }
 }
@@ -113,38 +106,79 @@ fun HomeStatus(
     homeUiState: HomeUiState,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
-    onDeleteClick: (Tanaman) -> Unit = {},
-    onDetailClick: (String) -> Unit
+    onDetailClick: (Tanaman) -> Unit, // Mengubah menjadi Tanaman
+    onDeleteClick: (Tanaman) -> Unit
 ) {
     when (homeUiState) {
         is HomeUiState.Loading -> {
-            OnLoading(modifier = modifier.fillMaxSize())
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
         }
         is HomeUiState.Success -> {
             if (homeUiState.tanaman.isEmpty()) {
                 Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = "Tidak ada data Tanaman", style = MaterialTheme.typography.bodyMedium)
+                    Text("Tidak ada data tanaman")
                 }
             } else {
                 TanamanLayout(
                     tanaman = homeUiState.tanaman,
-                    modifier = modifier.fillMaxWidth(),
-                    onDetailClick = { onDetailClick(it.idTanaman) },
-                    onDeleteClick = { onDeleteClick(it) }
+                    modifier = modifier,
+                    onDetailClick = onDetailClick, // Mengirimkan Tanaman
+                    onDeleteClick = onDeleteClick
                 )
             }
         }
         is HomeUiState.Error -> {
-            OnError(retryAction, modifier = modifier.fillMaxSize())
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Error loading data")
+                    Button(onClick = retryAction) {
+                        Text("Retry")
+                    }
+                }
+            }
         }
     }
 }
 
+// Gunakan OnLoading jika sedang loading
+@Composable
+fun OnLoading(modifier: Modifier = Modifier) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        CircularProgressIndicator()
+    }
+}
+
+// Gunakan OnError jika terjadi error
+@Composable
+fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = Icons.Default.Home,
+            contentDescription = "Error Icon",
+            modifier = Modifier.size(50.dp),
+            tint = MaterialTheme.colorScheme.error
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = "Error loading data", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.error)
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = retryAction) {
+            Text(text = "Retry")
+        }
+    }
+}
+
+// Gunakan TanamanLayout untuk menampilkan data tanaman
 @Composable
 fun TanamanLayout(
     tanaman: List<Tanaman>,
     modifier: Modifier = Modifier,
-    onDetailClick: (Tanaman) -> Unit,
+    onDetailClick: (Tanaman) -> Unit, // Mengubah parameter menjadi Tanaman
     onDeleteClick: (Tanaman) -> Unit
 ) {
     LazyColumn(
@@ -157,7 +191,8 @@ fun TanamanLayout(
                 tanaman = tanaman,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onDetailClick(tanaman) },
+                    .clickable { onDetailClick(tanaman) } // Mengirim seluruh objek tanaman
+                    .padding(8.dp),
                 onDeleteClick = { onDeleteClick(tanaman) }
             )
         }
@@ -177,14 +212,14 @@ fun TanamanCard(
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Default.Person,
+                    imageVector = Icons.Default.Notifications,
                     contentDescription = "Tanaman Icon",
                     modifier = Modifier.size(40.dp)
                 )
@@ -198,54 +233,23 @@ fun TanamanCard(
                 IconButton(onClick = { onDeleteClick(tanaman) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Hapus Tanaman",
+                        contentDescription = "Hapus Tanaman"
                     )
                 }
             }
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
             Row {
-                Text("Id Tanaman :", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(tanaman.idTanaman, style = MaterialTheme.typography.titleMedium)
+                Text("Nama:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
+                Text(tanaman.namaTanaman, style = MaterialTheme.typography.titleMedium)
             }
             Row {
-                Text("nama tamanan :", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(tanaman.namaTanaman, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+                Text("Periode:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
+                Text(tanaman.periodeTanaman, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
             }
             Row {
-                Text("Periode Tanaman:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(tanaman.periodeTanaman, style = MaterialTheme.typography.bodyMedium)
-            }
-            Row {
-                Text("Deskripsi Tanaman:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
+                Text("Deskripsi:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
                 Text(tanaman.deskripsiTanaman, style = MaterialTheme.typography.bodyMedium)
             }
-        }
-    }
-}
-
-@Composable
-fun OnLoading(modifier: Modifier = Modifier) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            imageVector = Icons.Default.Home,
-            contentDescription = "Error Icon",
-            modifier = Modifier.size(50.dp),
-            tint = MaterialTheme.colorScheme.error
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = retryAction) {
-            Text(text = "Retry")
         }
     }
 }

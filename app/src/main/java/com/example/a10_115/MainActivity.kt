@@ -11,8 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.a10_115.ui.Navigation.PengelolaHalaman
 import com.example.a10_115.ui.theme.A10_115Theme
+import com.example.a10_115.ui.viewModel.EventApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             A10_115Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    PengelolaHalaman(
+                    EventApp(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

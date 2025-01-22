@@ -11,34 +11,60 @@ import com.example.a10_115.ui.view.Splash.Splash
 import com.example.a10_115.ui.view.pekerja.DestinasiEntryPekerja
 import com.example.a10_115.ui.view.pekerja.DestinasiHomePekerja
 import com.example.a10_115.ui.view.pekerja.EntryPekerjaScreen
-import com.example.a10_115.ui.view.pekerja.HomeScreen
+import com.example.a10_115.ui.view.pekerja.HomeScreenPekerja
+import com.example.a10_115.ui.view.tanaman.DestinasiEntryTanaman
+import com.example.a10_115.ui.view.tanaman.DestinasiHomeTanaman
+import com.example.a10_115.ui.view.tanaman.HomeScreenTanaman
+import com.example.a10_115.ui.view.tanaman.EntryTanamanScreen  // Pastikan EntryTanamanScreen sudah ada
 
 @Composable
-fun PengelolaHalaman(navController: NavHostController = rememberNavController(), modifier: Modifier) {
+fun PengelolaHalaman(
+    navController: NavHostController = rememberNavController(),
+    modifier: Modifier = Modifier
+) {
     NavHost(
         navController = navController,
-        startDestination = DestinasiSplash.route, // Halaman Splash sebagai awal
-        modifier = Modifier
+        startDestination = DestinasiSplash.route,
+        modifier = modifier
     ) {
         composable(DestinasiSplash.route) {
             Splash(
-                onDosenClick = {
+                onPekerjaClick = {
                     navController.navigate(DestinasiHomePekerja.route)
                 },
-                onMataKuliahClick = {
-                    navController.navigate(DestinasiEntryPekerja.route)
+                onTanamanClick = {
+                    navController.navigate(DestinasiHomeTanaman.route)
+                },
+                onCatatanPanenClick = {
+
+                },
+                onAktifitasPertanianClick = {
+
                 }
             )
         }
 
         composable(DestinasiHomePekerja.route) {
-            HomeScreen(
+            HomeScreenPekerja(
                 navigateToItemEntry = {
                     navController.navigate(DestinasiEntryPekerja.route)
                 },
-                navigateToSplash = { // Navigasi kembali ke Splash
+                navigateToSplash = {
                     navController.navigate(DestinasiSplash.route) {
-                        popUpTo(DestinasiSplash.route) { inclusive = true } // Hapus riwayat sebelumnya
+                        popUpTo(DestinasiSplash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(DestinasiHomeTanaman.route) {
+            HomeScreenTanaman(
+                navigateToItemEntry = {
+                    navController.navigate(DestinasiEntryTanaman.route) // Perbaiki navigasi ke halaman insert tanaman
+                },
+                navigateToSplash = {
+                    navController.navigate(DestinasiSplash.route) {
+                        popUpTo(DestinasiSplash.route) { inclusive = true }
                     }
                 }
             )
@@ -51,7 +77,13 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController(),
                 }
             )
         }
+
+        composable(DestinasiEntryTanaman.route) {
+            EntryTanamanScreen(  // Pastikan EntryTanamanScreen sudah ada dan digunakan di sini
+                navigateBack = {
+                    navController.popBackStack(DestinasiHomeTanaman.route, inclusive = false)
+                }
+            )
+        }
     }
 }
-
-

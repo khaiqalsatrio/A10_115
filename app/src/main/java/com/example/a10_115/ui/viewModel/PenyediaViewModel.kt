@@ -5,24 +5,39 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.a10_115.PertanianApplications
-import com.example.a10_115.ui.viewModel.pekerja.HomeViewModel
-import com.example.a10_115.ui.viewModel.pekerja.insertViewModel
+import com.example.a10_115.ui.viewModel.pekerja.HomePekerjaViewModel
+import com.example.a10_115.ui.viewModel.pekerja.insertPekerjaViewModel
+import com.example.a10_115.ui.viewModel.tanaman.HomeTanamanViewModel
+import com.example.a10_115.ui.viewModel.tanaman.insertTanamanViewModel
 
 object PenyediaViewModel {
     val Factory = viewModelFactory {
         initializer {
-            HomeViewModel(aplikasiPertanian()
-                .container.pekerjaRepository)
+            HomePekerjaViewModel(
+                aplikasiPertanian()
+                    .container.pekerjaRepository
+            )
         }
 
         initializer {
-            insertViewModel(aplikasiPertanian()
-                .container.pekerjaRepository)
+            insertPekerjaViewModel(
+                aplikasiPertanian()
+                    .container.pekerjaRepository
+            )
         }
 
         initializer {
-            HomeViewModel(aplikasiPertanian()
-                .container.tanamanRepository)
+            HomeTanamanViewModel(
+                aplikasiPertanian()
+                    .container.tanamanRepository
+            )
+        }
+
+        initializer {
+            insertTanamanViewModel(
+                aplikasiPertanian()
+                    .container.tanamanRepository
+            )
         }
     }
 

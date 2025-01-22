@@ -1,3 +1,5 @@
+// HomeTanamanViewModel.kt
+
 package com.example.a10_115.ui.viewModel.tanaman
 
 import androidx.compose.runtime.getValue
@@ -17,9 +19,9 @@ sealed class HomeUiState {
     object Loading : HomeUiState()
 }
 
-class HomeViewModel(private val tanaman: TanamanRepository): ViewModel() {
+class HomeTanamanViewModel(private val tanamanRepository: TanamanRepository) : ViewModel() {
 
-    var tanamanUIState: HomeUiState by mutableStateOf(HomeUiState.Loading)
+    var tanamanUiState by mutableStateOf<HomeUiState>(HomeUiState.Loading)
         private set
 
     init {
@@ -28,31 +30,33 @@ class HomeViewModel(private val tanaman: TanamanRepository): ViewModel() {
 
     fun getTanaman() {
         viewModelScope.launch {
-            tanamanUIState = HomeUiState.Loading
-            tanamanUIState = try {
-                val tanamanList = tanaman.getTanaman()  // Dapatkan data tanaman
-                HomeUiState.Success(tanamanList)
+            tanamanUiState = HomeUiState.Loading
+            try {
+                val tanamanList = tanamanRepository.getTanaman()
+                if (tanamanList.isEmpty()) {
+                    tanamanUiState = HomeUiState.Error // Atau beri state khusus jika data kosong
+                } else {
+                    tanamanUiState = HomeUiState.Success(tanamanList)
+                }
             } catch (e: IOException) {
-                HomeUiState.Error
+                tanamanUiState = HomeUiState.Error
             } catch (e: HttpException) {
-                HomeUiState.Error
+                tanamanUiState = HomeUiState.Error
             }
         }
     }
 
     fun deleteTanaman(idTanaman: String) {
-        println("Menghapus tanaman dengan ID: $idTanaman") // Debugging
         viewModelScope.launch {
             try {
-                tanaman.deleteTanaman(idTanaman) // Hapus Tanaman
-                tanamanUIState = HomeUiState.Success(tanaman.getTanaman()) // Update UI
+                tanamanRepository.deleteTanaman(idTanaman)
+                getTanaman() // Refresh data tanaman setelah dihapus
             } catch (e: IOException) {
-                println("Error IO: ${e.message}")
-                tanamanUIState = HomeUiState.Error
+                tanamanUiState = HomeUiState.Error
             } catch (e: HttpException) {
-                println("Error HTTP: ${e.message}")
-                tanamanUIState = HomeUiState.Error
+                tanamanUiState = HomeUiState.Error
             }
         }
     }
 }
+
