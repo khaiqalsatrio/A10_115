@@ -19,9 +19,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,6 +43,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.a10_115.model.Pekerja
+import com.example.a10_115.model.Tanaman
 import com.example.a10_115.ui.Navigation.DestinasiNavigasi
 import com.example.a10_115.ui.viewModel.PenyediaViewModel
 import com.example.a10_115.ui.viewModel.pekerja.HomePekerjaViewModel
@@ -181,12 +182,13 @@ fun PekerjaCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            // Baris pertama: Ikon, ID Panen, dan tombol hapus
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Default.Person,
+                    imageVector = Icons.Default.Star,
                     contentDescription = "Pekerja Icon",
                     modifier = Modifier.size(40.dp)
                 )
@@ -204,17 +206,20 @@ fun PekerjaCard(
                     )
                 }
             }
+
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
-            Row {
-                Text("Nama:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(pekerja.namaPekerja, style = MaterialTheme.typography.titleMedium)
+
+            // Baris kedua: Semua data ditampilkan horizontal
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Nama Pekerja:", style = MaterialTheme.typography.bodyMedium)
+                Text(pekerja.namaPekerja, style = MaterialTheme.typography.bodyMedium)
             }
-            Row {
-                Text("Jabatan:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(pekerja.jabatan, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Jabatan:", style = MaterialTheme.typography.bodyMedium)
+                Text(pekerja.jabatan, style = MaterialTheme.typography.bodyMedium)
             }
-            Row {
-                Text("Kontak:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("No Telepon:", style = MaterialTheme.typography.bodyMedium)
                 Text(pekerja.kontakPekerja, style = MaterialTheme.typography.bodyMedium)
             }
         }
@@ -236,7 +241,7 @@ fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            imageVector = Icons.Default.Home,
+            imageVector = Icons.Default.Refresh,
             contentDescription = "Error Icon",
             modifier = Modifier.size(50.dp),
             tint = MaterialTheme.colorScheme.error
