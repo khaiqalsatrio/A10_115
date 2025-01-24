@@ -79,7 +79,7 @@ fun HomeScreenAktivitasPertanian(
         },
         topBar = {
             SmallTopAppBar(
-                title = { Text("Daftar Data Aktivitas Pertanian") },
+                title = { Text("Daftar Aktivitas Pertanian") },
                 navigationIcon = { // Tambahkan ikon panah di sebelah kiri
                     IconButton(onClick = navigateToSplash) {
                         Icon(
@@ -103,7 +103,7 @@ fun HomeScreenAktivitasPertanian(
             modifier = Modifier.padding(innerPadding),
             onDetailClick = onDetailClick,
             onDeleteClick = { aktivitasPertanian ->
-                viewModel.deleteAktivitasPertanian( aktivitasPertanian.idAktivitas) // Panggil fungsi delete
+                viewModel.deleteAktivitasPertanian(aktivitasPertanian.idAktivitas ?: "") // Gunakan default jika null
                 viewModel.getAktivitasPertanian() // Refresh daftar catatan panen setelah delete
             }
         )
@@ -131,7 +131,7 @@ fun HomeStatus(
                 AktivitasPertanianLayout(
                     aktivitasPertanian = homeUiState.aktivitas,
                     modifier = modifier.fillMaxWidth(),
-                    onDetailClick = { onDetailClick(it.idAktivitas) },
+                    onDetailClick = { onDetailClick(it.idAktivitas ?: "") }, // Default value jika null
                     onDeleteClick = { onDeleteClick(it) }
                 )
             }
@@ -192,7 +192,7 @@ fun AktivitasPertanianCard(
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = aktivitasPertanian.idAktivitas,
+                    text = aktivitasPertanian.idAktivitas ?: "N/A", // Gunakan default jika null
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
