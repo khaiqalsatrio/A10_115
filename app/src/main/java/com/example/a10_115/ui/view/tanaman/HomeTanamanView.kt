@@ -20,8 +20,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,12 +35,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.a10_115.model.Tanaman
@@ -60,7 +58,7 @@ fun HomeScreenTanaman(
     navigateToItemEntry: () -> Unit,
     navigateToSplash: () -> Unit,
     modifier: Modifier = Modifier,
-    onDetailClick: (Tanaman) -> Unit = {}, // Mengubah menjadi Tanaman
+    onDetailClick: (Tanaman) -> Unit = {},
     onRefresh: () -> Unit = {},
     viewModel: HomeTanamanViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
@@ -72,7 +70,7 @@ fun HomeScreenTanaman(
         modifier = modifier,
         topBar = {
             SmallTopAppBar(
-                title = { Text("Daftar Data Tanaman") },
+                title = { Text("Daftar Tanaman") },
                 navigationIcon = {
                     IconButton(onClick = navigateToSplash) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
@@ -212,14 +210,14 @@ fun TanamanCard(
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Default.Notifications,
+                    imageVector = Icons.Default.Star,
                     contentDescription = "Tanaman Icon",
                     modifier = Modifier.size(40.dp)
                 )
@@ -233,23 +231,31 @@ fun TanamanCard(
                 IconButton(onClick = { onDeleteClick(tanaman) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Hapus Tanaman"
+                        contentDescription = "Hapus Tanaman",
                     )
                 }
             }
+
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
-            Row {
-                Text("Nama:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(tanaman.namaTanaman, style = MaterialTheme.typography.titleMedium)
+
+            // Baris kedua: Semua data ditampilkan horizontal
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("ID Tanaman:", style = MaterialTheme.typography.bodyMedium)
+                Text(tanaman.idTanaman, style = MaterialTheme.typography.bodyMedium)
             }
-            Row {
-                Text("Periode:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(tanaman.periodeTanaman, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Nama Tanaman:", style = MaterialTheme.typography.bodyMedium)
+                Text(tanaman.namaTanaman, style = MaterialTheme.typography.bodyMedium)
             }
-            Row {
-                Text("Deskripsi:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Periode Tanam:", style = MaterialTheme.typography.bodyMedium)
+                Text(tanaman.periodeTanaman, style = MaterialTheme.typography.bodyMedium)
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Deskripsi tanaman:", style = MaterialTheme.typography.bodyMedium)
                 Text(tanaman.deskripsiTanaman, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
 }
+

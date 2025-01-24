@@ -20,7 +20,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.a10_115.model.AktivitasPertanian
 import com.example.a10_115.ui.Navigation.DestinasiNavigasi
-import com.example.a10_115.ui.view.catatanPanen.CatatanPanenCard
 import com.example.a10_115.ui.viewModel.PenyediaViewModel
 import com.example.a10_115.ui.viewModel.aktivitasPertanian.HomeAktivitasViewModel
 import com.example.a10_115.ui.viewModel.aktivitasPertanian.HomeUiState
@@ -83,7 +84,7 @@ fun HomeScreenAktivitasPertanian(
                 navigationIcon = { // Tambahkan ikon panah di sebelah kiri
                     IconButton(onClick = navigateToSplash) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack, // Ganti dengan ikon panah kiri
+                            imageVector = Icons.Default.ArrowBack, // Ganti dengan arrow panah kiri
                             contentDescription = "Kembali ke Splash"
                         )
                     }
@@ -181,12 +182,13 @@ fun AktivitasPertanianCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            // Bagian atas: Ikon, ID Aktivitas, dan tombol hapus
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Default.DateRange,
+                    imageVector = Icons.Default.Star,
                     contentDescription = "Catatan Icon",
                     modifier = Modifier.size(40.dp)
                 )
@@ -204,30 +206,42 @@ fun AktivitasPertanianCard(
                     )
                 }
             }
+
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
-            Row {
-                Text("ID Aktivitas:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(aktivitasPertanian.idAktivitas, style = MaterialTheme.typography.titleMedium)
+
+            // Bagian bawah: Data ditampilkan horizontal
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("ID Tanaman:", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    aktivitasPertanian.idTanaman ?: "N/A", // Gunakan default jika null
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
-            Row {
-                Text("ID Tanaman:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(aktivitasPertanian.idTanaman, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("ID Pekerja:", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    aktivitasPertanian.idPekerja ?: "N/A", // Gunakan default jika null
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
-            Row {
-                Text("ID Pekerja:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(aktivitasPertanian.idTanaman, style = MaterialTheme.typography.bodyMedium)
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Tanggal:", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    aktivitasPertanian.tanggalAktivitas ?: "N/A", // Gunakan default jika null
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
-            Row {
-                Text("Tanggal pekerja:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(aktivitasPertanian.tanggalAktivitas, style = MaterialTheme.typography.bodyMedium)
-            }
-            Row {
-                Text("Deskripsi Aktivits:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(aktivitasPertanian.deskripsiAktivitas, style = MaterialTheme.typography.bodyMedium)
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Deskripsi:", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    aktivitasPertanian.deskripsiAktivitas ?: "N/A", // Gunakan default jika null
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
     }
 }
+
 
 @Composable
 fun OnLoading(modifier: Modifier = Modifier) {

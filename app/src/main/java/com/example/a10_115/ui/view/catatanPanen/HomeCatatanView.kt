@@ -20,7 +20,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -78,7 +80,7 @@ fun HomeScreenCatatanPanen(
         },
         topBar = {
             SmallTopAppBar(
-                title = { Text("Daftar Data Catatan panen") },
+                title = { Text("Daftar Catatan panen") },
                 navigationIcon = { // Tambahkan ikon panah di sebelah kiri
                     IconButton(onClick = navigateToSplash) {
                         Icon(
@@ -185,7 +187,7 @@ fun CatatanPanenCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Default.DateRange,
+                    imageVector = Icons.Default.Star,
                     contentDescription = "Catatan Icon",
                     modifier = Modifier.size(40.dp)
                 )
@@ -203,25 +205,24 @@ fun CatatanPanenCard(
                     )
                 }
             }
+
             Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
-            Row {
-                Text("ID Panen:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(catatanPanen.idPanen, style = MaterialTheme.typography.titleMedium)
+
+            // Baris kedua: Semua data ditampilkan horizontal
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("ID Tanaman:", style = MaterialTheme.typography.bodyMedium)
+                Text(catatanPanen.idTanaman, style = MaterialTheme.typography.bodyMedium)
             }
-            Row {
-                Text("ID Tanaman:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
-                Text(catatanPanen.idTanaman, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
-            }
-            Row {
-                Text("Tanggal Panen:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Tanggal Panen:", style = MaterialTheme.typography.bodyMedium)
                 Text(catatanPanen.tanggalPanen, style = MaterialTheme.typography.bodyMedium)
             }
-            Row {
-                Text("Jumlah Panen:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Jumlah Panen:", style = MaterialTheme.typography.bodyMedium)
                 Text(catatanPanen.jumlahPanen, style = MaterialTheme.typography.bodyMedium)
             }
-            Row {
-                Text("Keterangan:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(80.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Keterangan:", style = MaterialTheme.typography.bodyMedium)
                 Text(catatanPanen.keterangan, style = MaterialTheme.typography.bodyMedium)
             }
         }
