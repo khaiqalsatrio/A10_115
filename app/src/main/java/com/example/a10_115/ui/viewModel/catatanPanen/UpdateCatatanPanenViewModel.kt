@@ -30,7 +30,6 @@ class UpdateCatatanPanenViewModel(
         uicatatanPanenState = uicatatanPanenState.copy(insertUiEvent = insertUiEvent)
     }
 
-
     suspend fun updateCatatanPanen(){
         viewModelScope.launch {
             try {
